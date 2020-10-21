@@ -1,0 +1,24 @@
+.not-allowed-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 17vh;
+
+  .not-allowed-gif {
+    width: 80vw;
+    max-width: 340px;
+  }
+  .not-allowed-title {
+    font-weight: bold;
+  }
+}
+
+@media (min-width: 1000px) {
+  .not-allowed-title {
+    font-size: 55px;
+  }
+  .not-allowed-text {
+    font-size: 25px;
+  }
+}

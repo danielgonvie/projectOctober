@@ -1,0 +1,47 @@
+.signup-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: 17vh;
+  .signup-title {
+    margin-top: 10px;
+  }
+  .signup-form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    .signup-param {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      .signup-field {
+        width: 100%;
+        padding: 12px 20px;
+        margin: 8px 0;
+        border-radius: 20px;
+        box-sizing: border-box;
+      }
+    }
+    .submit-button {
+      color: black;
+      border-style: outset;
+      border: 2px solid black;
+      background-color: #c38efe;
+      height: 50px;
+      width: 100px;
+      border-radius: 20px;
+      font: bolder 15px "Montserrat", sans-serif;
+      text-shadow: none;
+      margin: 15px 0px;
+    }
+  }
+}
+
+@media (max-height: 600px) {
+  .signup-container {
+    margin-top: 100px;
+  }
+}
