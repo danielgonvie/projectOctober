@@ -1,0 +1,72 @@
+.chat-box{
+    width: 50vw;
+    background-color: rgba(93, 208, 236, 0.459);
+    display: flex;
+    height: 60vh;
+}
+
+.chat-rooms{
+    width: 10vw;
+    background-color: #1D232A;
+}
+
+.chat-container{
+    background-color: #242A32;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+
+.salas-title{
+    margin: 0;
+    font-size: 20px;
+    font-weight: bold;
+    padding: 10px 10px;
+}
+
+.chat-input{
+    background-color: #8D9093;
+    height: 40px;
+    width: 100%;
+    display:flex;
+    align-items: center;
+}
+
+.chat-input:focus-within {
+    border: 1px solid lightgray; 
+    border-radius: 2px;
+
+}
+.send-content{
+    height: 90%;
+    width: 90%;
+    background-color: #8D9093;
+    border: 0px;
+}
+
+.send-icon{
+    width: 12%;
+    height: 100%;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #8D9093;
+    :hover{
+        color: white;
+    }
+    :active{
+        color: rgb(33,33,33);
+    }
+}
+
+i{
+    margin: 0;
+    padding: 0;
+}
+
+input:focus{
+    outline: none;
+}

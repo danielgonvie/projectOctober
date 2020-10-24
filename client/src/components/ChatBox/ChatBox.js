@@ -58,12 +58,19 @@ export default class ChatBox extends Component {
     return (
       <div className="chat-box">
         <div className="chat-rooms">
+          <h1 className="salas-title">Salas</h1>
           {rooms && this.displayRooms()}
           {!rooms && <p>Loading rooms...</p> }
         </div>
         <div className="chat-container">
+          <div className="chat-messages">
           {selectedRoom && this.displayMessages()}
           {!selectedRoom && <p>Pick a room...</p> }
+          </div>
+          <div className="chat-input">
+            <input className="send-content"></input>
+            <div className="send-icon" onClick={ev => console.log("hola")}><i class="material-icons">send</i></div>
+          </div>
         </div>
 
       </div>

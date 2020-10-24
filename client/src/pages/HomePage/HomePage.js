@@ -17,8 +17,8 @@ export default class HomePage extends Component {
   render() {
 
     return (
-      <div className="login-container">
-        <h1 className="login-title">YOU ARE IN THE HOME BTW</h1>
+      <div className="home-page">
+        <h1 className="home-title">YOU ARE IN THE HOME BTW</h1>
         <p>Bienvenido {this.state.user.username}</p>
         <ChatBox user={this.state.user}></ChatBox>
         <Link onClick={e => this.props.logout(e)} to="/">
