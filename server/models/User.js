@@ -5,7 +5,8 @@ const userSchema = new Schema(
   {
     name: {type: String, required: true},
     username: String,
-    password: String
+    password: String,
+    rooms: Array,
   },
   {
     timestamps: {

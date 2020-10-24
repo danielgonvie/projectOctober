@@ -39,22 +39,6 @@ router.put("/edit/:id", (req, res, next) => {
     .catch(error => console.log("Ha sucedido algo malo" + error));
 });
 
-//Create a new user
-router.post("/new", (req, res, next) => {
-  User.create({
-    name: req.body.name,
-
-  })
-    .then(user => {
-      console.log("User has been created successfully");
-      res.json(user);
-    })
-    .catch(function() {
-      next();
-      throw new Error("Something went worng!");
-    });
-});
-
 //Delete user
 router.delete("/delete/:id", (req, res, next) => {
   const { id } = req.params;

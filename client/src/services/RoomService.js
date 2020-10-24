@@ -1,6 +1,6 @@
 import axios from "axios";
 
-class UserService {
+class RoomService {
   constructor() {
     this.instance = axios.create({
       baseURL: `${process.env.REACT_APP_API_URL}`,
@@ -8,30 +8,23 @@ class UserService {
     });
   }
 
-  fetchUsers = () => {
+  fetchRooms = () => {
     return this.instance
-      .get("/users")
+      .get("/rooms")
       .then(res => Promise.resolve(res.data))
       .catch(error => console.error(error));
   };
 
-  fetchOneUser = id => {
+  fetchOneRoom = id => {
     return this.instance
-      .get(`/users/${id}`)
+      .get(`/rooms/${id}`)
       .then(res => Promise.resolve(res.data))
       .catch(error => console.error(error));
   };
 
-  updateUser = (id, name, birthdate) => {
+  sendMessage = (id, message, owner, created_at) => {
     return this.instance
-      .put(`/users/edit/${id}`, { name, birthdate })
-      .then(res => Promise.resolve(res.data))
-      .catch(error => console.error(error));
-  };
-
-  newUser = (name, birthdate) => {
-    return this.instance
-      .post(`/users/new`, { name, birthdate })
+      .post(`/sendMessage/${id}`, {owner, message, created_at})
       .then(res => Promise.resolve(res.data))
       .catch(error => console.error(error));
   };
@@ -44,4 +37,4 @@ class UserService {
   };
 }
 
-export default UserService;
+export default RoomService;

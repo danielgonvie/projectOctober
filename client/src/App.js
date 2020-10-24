@@ -115,7 +115,7 @@ export default class App extends Component {
               path="/signup"
               render={match => (
                 <React.Fragment>
-                 <NotAllowed logout={this.handleLogout}></NotAllowed>
+                 <NotAllowed {...match} user={user} logout={this.handleLogout}></NotAllowed>
                 </React.Fragment>
               )}
             />

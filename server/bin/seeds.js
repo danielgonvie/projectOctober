@@ -3,6 +3,7 @@ require("dotenv").config();
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const User = require("../models/User");
+const Room = require("../models/Room");
 
 const bcryptSalt = 10;
 
@@ -21,43 +22,97 @@ let users = [
   {
     name: "Ductor",
     username: "ductor",
-    password: bcrypt.hashSync("ductor", bcrypt.genSaltSync(bcryptSalt))
+    password: bcrypt.hashSync("ductor", bcrypt.genSaltSync(bcryptSalt)),
+    rooms: undefined,
   },
   {
     name: "Anacletillo",
     username: "anacletillo",
-    password: bcrypt.hashSync("anacletillo", bcrypt.genSaltSync(bcryptSalt))
+    password: bcrypt.hashSync("anacletillo", bcrypt.genSaltSync(bcryptSalt)),
+    rooms: undefined,
   },
   {
     name: "GrumpyUlmo",
     username: "grumpyulmo",
-    password: bcrypt.hashSync("grumpyulmo", bcrypt.genSaltSync(bcryptSalt))
-  },
-  {
-    name: "Azazel",
-    username: "azazel",
-    password: bcrypt.hashSync("azazel", bcrypt.genSaltSync(bcryptSalt))
-  },
-  {
-    name: "Rick",
-    username: "rick",
-    password: bcrypt.hashSync("rick", bcrypt.genSaltSync(bcryptSalt))
+    password: bcrypt.hashSync("grumpyulmo", bcrypt.genSaltSync(bcryptSalt)),
+    rooms: undefined,
   }
 ];
 
-User.deleteMany()
+let rooms = [
+  {
+    name: "Public",
+    content: [
+      {
+        message: "Hola buenas, loko",
+        owner: "Ductor",
+        
+      },
+      {
+        message: "Estamos en la publica, loko",
+        owner: "Ductor",
+
+      },
+      {
+        message: "Increíble, loko",
+        owner: "Anacletillo",
+
+      }
+    ],
+  },
+  {
+    name: "Public 2",
+    content: [
+      {
+        message: "Hola buenas, loko",
+        owner: "Ductor",
+
+      },
+      {
+        message: "Estamos en la privada1, loko",
+        owner: "Ductor",
+
+      },
+      {
+        message: "Increíble, mano",
+        owner: "GrumpyUlmo",
+
+      }
+    ],
+  },
+]
+
+Room.deleteMany()
+  .then(() => {
+    return Room.create(rooms);
+  })
+  .then(roomsCreated => {
+      console.log(roomsCreated)
+      users = users.map((user, idx) => {
+      user.rooms = roomsCreated;
+      
+      return user;
+  })
+
+  User.deleteMany()
   .then(() => {
     return User.create(users);
   })
   .then(usersCreated => {
-    console.log(`${usersCreated.length} users created with the following id:`);
+    console.log(
+      `${usersCreated.length} users created with the following id:`
+    );
     console.log(usersCreated.map(u => u._id));
   })
   .then(() => {
     // Close properly the connection to Mongoose
     mongoose.disconnect();
   })
+  })
   .catch(err => {
     mongoose.disconnect();
     throw err;
   });
+
+
+
