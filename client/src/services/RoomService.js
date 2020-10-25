@@ -22,9 +22,9 @@ class RoomService {
       .catch(error => console.error(error));
   };
 
-  sendMessage = (id, message, owner, created_at) => {
+  sendMessage = (id, message, owner) => {
     return this.instance
-      .post(`/sendMessage/${id}`, {owner, message, created_at})
+      .post(`/rooms/sendMessage/${id}`, {owner, message})
       .then(res => Promise.resolve(res.data))
       .catch(error => console.error(error));
   };

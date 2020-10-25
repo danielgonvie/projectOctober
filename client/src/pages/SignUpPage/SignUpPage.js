@@ -10,7 +10,6 @@ export default class SignUpPage extends Component {
   state = {
     username: "",
     password: "",
-    name: "",
     pass: true,
   };
 
@@ -41,7 +40,7 @@ export default class SignUpPage extends Component {
   };
 
   render() {
-    const { username, password, name } = this.state;
+    const { username, password } = this.state;
 
     return (
       <div className="signup-container">
@@ -73,20 +72,6 @@ export default class SignUpPage extends Component {
               required
               onChange={this.handleChange}
               placeholder="password"
-            />
-          </div>
-          <div className="signup-param">
-            <label>Nickname </label>
-            <input
-              className="signup-field"
-              type="text"
-              value={name}
-              minLength="4"
-              maxLength="18"
-              name="name"
-              required
-              onChange={this.handleChange}
-              placeholder="Nickname"
             />
           </div>
           {!this.state.pass ? <p>Nombre de usuario ya cogío</p> : ""}

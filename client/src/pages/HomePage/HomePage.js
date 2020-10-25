@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 
 import ChatBox from '../../components/ChatBox/ChatBox';
+import socket from '../../components/Socket/Socket';
 import "./HomePage.scss";
 
 export default class HomePage extends Component {
@@ -10,10 +11,15 @@ export default class HomePage extends Component {
     this.state = {
       user: this.props.user,
     };
+
+   
+
   }
 
-
-
+  componentDidMount() {  
+    socket.emit('conectado', "hola desde cliente")
+  }
+  
   render() {
 
     return (

@@ -41,6 +41,26 @@ server.on('error', error => {
   }
 });
 
+const socketio = require('socket.io');
+const io = socketio(server);
+
+io.on('connection', socket => {
+
+  socket.on('conectado', () => {
+    console.log("Usuario conectado");
+  })
+
+  socket.on('mensaje', (owner, message) => {
+    console.log("entro en mensaje1")
+    io.emit("mensajes", {owner, message});
+
+  })
+
+  socket.on('disconect', () => {
+    io.emit("mensajes", {servidor: "Servidor", mensaje: "Ha abandonadop la sala"});
+  })
+})
+
 server.listen(process.env.PORT, () => {
   console.log(`Listening on http://localhost:${process.env.PORT}`);
 });

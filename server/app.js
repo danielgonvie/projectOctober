@@ -7,6 +7,8 @@ const mongoose = require("mongoose");
 const logger = require("morgan");
 const path = require("path");
 const passport = require("passport");
+const http = require('http');
+
 
 const session = require("express-session");
 const MongoStore = require("connect-mongo")(session);
@@ -22,6 +24,7 @@ const debug = require("debug")(
 );
 
 const app = express();
+let server = http.createServer(app);
 
 // Middleware Setup
 app.use(logger("dev"));

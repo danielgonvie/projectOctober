@@ -1,15 +1,19 @@
 import React, { Component } from "react";
 // import { Link } from "react-router-dom";
 import RoomService from '../../services/RoomService';
+import UserService from '../../services/UserService';
+import socket from '../../components/Socket/Socket';
 import "./ChatBox.scss";
+
 
 export default class ChatBox extends Component {
   constructor(props) {
     super(props);
     this.roomService = new RoomService();
+    this.userService = new UserService();
     this.state = {
       user: this.props.user,
-      
+      inputMessage: "",
     };
   }
 
@@ -18,13 +22,18 @@ export default class ChatBox extends Component {
 
   displayRooms = () => {
     const { rooms } = this.state;
-    return rooms.map((room, i) => <p onClick={ev => this.updateMessages(room._id)}>{room.name}</p>)
+    return rooms.map((room, i) => <p key={i} onClick={ev => this.updateMessages(room._id)}>{room.name}</p>)
   }
 
   displayMessages = () => {
     const  messages  = this.state.selectedRoom.content;
     
-    return messages.map((message, i) => <p>{message.message}</p>)
+  return messages.map((message, i) => 
+  <div key={i} className="chat-bubble">
+    <h1 className="message-author">{message.owner} :</h1>
+    <p className="message-text">{message.message}</p>
+  </div>
+  )
   }
 
   updateRooms = () => {
@@ -37,7 +46,6 @@ export default class ChatBox extends Component {
   }
 
   updateMessages = (id) => {
-    console.log(id);
     this.roomService.fetchOneRoom(id)
     .then(
       (room) => {
@@ -46,10 +54,44 @@ export default class ChatBox extends Component {
     )
   }
 
-  componentDidMount() {  
-    this.updateRooms()
+  sendMessage = (e) => {
+    e.preventDefault();
+    this.roomService.sendMessage(this.state.selectedRoom._id, this.state.inputMessage, this.state.user.username)
+    .then(
+      (message) => {
+        console.log(message)
+        socket.emit(`mensaje`, this.state.user.username, this.state.inputMessage)
+        this.setState({ ...this.state, inputMessage: ""})
+      }
+    )
   }
 
+  componentDidMount() {  
+    this.updateRooms()
+    socket.on('mensajes', mensaje => {
+      console.log(mensaje);
+      let allMensajes = this.state.selectedRoom.content;
+      console.log(allMensajes);
+      allMensajes.push(mensaje);
+      this.setState({ ...this.state, selectedRoom: {...this.state.selectedRoom, content: allMensajes}})
+    })
+  }
+
+  handleChange = e => {
+    const { name, value } = e.target;
+    this.setState({ ...this.state, [name]: value });
+  };
+
+  checkName = (owner) => {
+    this.userService.checkUserName(owner)
+    .then(
+      (user) => {
+        console.log(user.name);
+        return user.name;
+        
+      }
+    )
+  }
 
   render() {
     const { rooms } = this.state;
@@ -63,13 +105,21 @@ export default class ChatBox extends Component {
           {!rooms && <p>Loading rooms...</p> }
         </div>
         <div className="chat-container">
+          <h1 className="room-title">Public</h1>
           <div className="chat-messages">
           {selectedRoom && this.displayMessages()}
           {!selectedRoom && <p>Pick a room...</p> }
           </div>
           <div className="chat-input">
-            <input className="send-content"></input>
-            <div className="send-icon" onClick={ev => console.log("hola")}><i class="material-icons">send</i></div>
+            <input 
+            type="text"
+            className="send-content" 
+            name="inputMessage" 
+            onChange={e => this.handleChange(e)} 
+            value={this.state.inputMessage}
+            placeholder="Enviar un mensaje"
+            ></input>
+            <div className="send-icon" onClick={ev => this.sendMessage(ev)}><i className="material-icons">send</i></div>
           </div>
         </div>
 

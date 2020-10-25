@@ -17,10 +17,8 @@ router.get("/", (req, res, next) => {
 
 // Get all messages in one specific room
 router.get("/:roomId", (req, res, next) => {
-  console.log(req.params.roomId , "aburiio")
   Room.findById(req.params.roomId)
     .then(room => {
-      console.log(room, "lmao")
       res.status(200).json(room);
     })
     .catch(error => {
@@ -30,13 +28,20 @@ router.get("/:roomId", (req, res, next) => {
 
 //Send a new message
 router.post("/sendMessage/:roomId", (req, res, next) => {
+  console.log(req.body)
   Message.create({
     message: req.body.message,
-
+    owner: req.body.owner
   })
     .then(message => {
-      console.log("Message has been sended successfully");
-      res.json(message);
+      Room.findByIdAndUpdate(req.params.roomId, { $push: { content: message}} )
+       .then(room => {
+        console.log(room);
+        console.log("Message has been sended successfully");
+
+        res.json(room);
+       })
+
     })
     .catch(error => {
       res.status(500).json({ message: "Something went wrong" });

@@ -16,6 +16,19 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    padding: 10px;
+}
+
+.chat-messages{
+    flex-grow: 1;
+    overflow-y: auto;
+}
+
+.room-title{
+    font-size: 20px;
+    margin: 0;
+    padding: 1;
+    padding-bottom: 10px;
 }
 
 
@@ -44,6 +57,7 @@
     width: 90%;
     background-color: #8D9093;
     border: 0px;
+    padding: 10px;
 }
 
 .send-icon{
@@ -69,4 +83,26 @@ i{
 
 input:focus{
     outline: none;
+}
+
+.chat-bubble{
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 10px;;
+}
+
+.message-author{
+    font-size: 16px;
+    font-weight: bolder;
+    margin: 0;
+    padding: 0;
+    line-height: 18px;
+    margin-right: 5px;
+}
+
+.message-text{
+    font-size: 16px;
+    margin: 0;
+    padding: 0;
+    line-height: 20px;
 }
