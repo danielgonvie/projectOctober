@@ -22,7 +22,7 @@ export default class ChatBox extends Component {
 
   displayRooms = () => {
     const { rooms } = this.state;
-    return rooms.map((room, i) => <p key={i} onClick={ev => this.updateMessages(room._id)}>{room.name}</p>)
+    return rooms.map((room, i) => <p className="room-selection" key={i} onClick={ev => this.updateMessages(room._id)}>{room.name}</p>)
   }
 
   displayMessages = () => {
@@ -74,6 +74,8 @@ export default class ChatBox extends Component {
       console.log(allMensajes);
       allMensajes.push(mensaje);
       this.setState({ ...this.state, selectedRoom: {...this.state.selectedRoom, content: allMensajes}})
+      let chatWindow = document.querySelector('.chat-messages')
+      chatWindow.scrollTop = chatWindow.scrollHeight;
     })
   }
 
@@ -105,7 +107,7 @@ export default class ChatBox extends Component {
           {!rooms && <p>Loading rooms...</p> }
         </div>
         <div className="chat-container">
-          <h1 className="room-title">Public</h1>
+    <h1 className="room-title">{this.state.selectedRoom?.name}</h1>
           <div className="chat-messages">
           {selectedRoom && this.displayMessages()}
           {!selectedRoom && <p>Pick a room...</p> }

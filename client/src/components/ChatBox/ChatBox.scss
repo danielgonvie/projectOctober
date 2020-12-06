@@ -37,6 +37,7 @@
     font-size: 20px;
     font-weight: bold;
     padding: 10px 10px;
+    margin-bottom: 10px;
 }
 
 .chat-input{
@@ -105,4 +106,8 @@ input:focus{
     margin: 0;
     padding: 0;
     line-height: 20px;
+}
+
+.room-selection{
+    padding: 0px 10px;
 }
