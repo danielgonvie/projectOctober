@@ -50,9 +50,9 @@ io.on('connection', socket => {
     console.log("Usuario conectado");
   })
 
-  socket.on('mensaje', (owner, message) => {
+  socket.on('mensaje', (owner, message, roomId) => {
     console.log("entro en mensaje1")
-    io.emit("mensajes", {owner, message});
+    io.emit("mensajes", {owner, message, roomId});
 
   })
 

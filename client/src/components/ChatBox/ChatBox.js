@@ -60,7 +60,7 @@ export default class ChatBox extends Component {
     .then(
       (message) => {
         console.log(message)
-        socket.emit(`mensaje`, this.state.user.username, this.state.inputMessage)
+        socket.emit(`mensaje`, this.state.user.username, this.state.inputMessage, this.state.selectedRoom._id,)
         this.setState({ ...this.state, inputMessage: ""})
       }
     )
@@ -69,13 +69,18 @@ export default class ChatBox extends Component {
   componentDidMount() {  
     this.updateRooms()
     socket.on('mensajes', mensaje => {
-      console.log(mensaje);
-      let allMensajes = this.state.selectedRoom.content;
-      console.log(allMensajes);
-      allMensajes.push(mensaje);
-      this.setState({ ...this.state, selectedRoom: {...this.state.selectedRoom, content: allMensajes}})
-      let chatWindow = document.querySelector('.chat-messages')
-      chatWindow.scrollTop = chatWindow.scrollHeight;
+      console.log("mensaje", mensaje);
+      console.log("room", this.state.selectedRoom);
+      if(mensaje.roomId === this.state.selectedRoom._id){
+        console.log(mensaje);
+        let allMensajes = this.state.selectedRoom.content;
+        console.log(allMensajes);
+        allMensajes.push(mensaje);
+        this.setState({ ...this.state, selectedRoom: {...this.state.selectedRoom, content: allMensajes}})
+        let chatWindow = document.querySelector('.chat-messages')
+        chatWindow.scrollTop = chatWindow.scrollHeight;
+      }
+
     })
   }
 
