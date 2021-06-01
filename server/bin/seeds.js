@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const User = require("../models/User");
 const Room = require("../models/Room");
+const Song = require("../models/Song");
 
 const bcryptSalt = 10;
 
@@ -79,6 +80,26 @@ let rooms = [
   },
 ]
 
+let songs = [
+  {
+    videoId: "022CdArz5oM",
+    requestedBy: "test1",
+  },
+  {
+    videoId: "S0yLbdZRu3A",
+    requestedBy: "test2",
+  },
+  {
+    videoId: "3dRwNmXa0kc",
+    requestedBy: "test3",
+  }
+];
+
+Song.deleteMany()
+.then(() => {
+  return Song.create(songs);
+})
+
 Room.deleteMany()
   .then(() => {
     return Room.create(rooms);
@@ -90,6 +111,8 @@ Room.deleteMany()
       
       return user;
   })
+
+
 
   User.deleteMany()
   .then(() => {
@@ -110,6 +133,8 @@ Room.deleteMany()
     mongoose.disconnect();
     throw err;
   });
+
+
 
 
 
