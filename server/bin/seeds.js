@@ -4,7 +4,6 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const User = require("../models/User");
 const Room = require("../models/Room");
-const Song = require("../models/Song");
 
 const bcryptSalt = 10;
 
@@ -39,66 +38,78 @@ let users = [
 
 let rooms = [
   {
-    name: "Public",
+    name: "Dioses",
     content: [
       {
         message: "Hola buenas, loko",
-        owner: "Ductor",
+        owner: "ductor",
         
       },
       {
         message: "Estamos en la publica, loko",
-        owner: "Ductor",
+        owner: "ductor",
 
       },
       {
         message: "Increíble, loko",
-        owner: "Anacletillo",
+        owner: "anacletillo",
 
       }
     ],
+    songs: [
+      {
+        videoId: "2JXEp2im-LA",
+        requestedBy: "test1",
+      },
+      {
+        videoId: "nqc4t4029as",
+        requestedBy: "test2",
+      },
+      {
+        videoId: "r8GvPcKqq80",
+        requestedBy: "test3",
+      }
+    ],
+    currentTime: 15,
+    currentUsers: 0
   },
   {
-    name: "Public 2",
+    name: "Lolsito",
     content: [
       {
         message: "Hola buenas, loko",
-        owner: "Ductor",
+        owner: "ductor",
 
       },
       {
         message: "Estamos en la privada1, loko",
-        owner: "Ductor",
+        owner: "ductor",
 
       },
       {
         message: "Increíble, mano",
-        owner: "GrumpyUlmo",
+        owner: "grumpyulmo",
 
       }
     ],
+    songs: [
+      {
+        videoId: "KbNL9ZyB49c",
+        requestedBy: "test4",
+      },
+      {
+        videoId: "aR-KAldshAE",
+        requestedBy: "test5",
+      },
+      {
+        videoId: "zF5Ddo9JdpY",
+        requestedBy: "test6",
+      }
+    ],
+    currentTime: 30,
+    currentUsers: 0
   },
 ]
-
-let songs = [
-  {
-    videoId: "022CdArz5oM",
-    requestedBy: "test1",
-  },
-  {
-    videoId: "S0yLbdZRu3A",
-    requestedBy: "test2",
-  },
-  {
-    videoId: "3dRwNmXa0kc",
-    requestedBy: "test3",
-  }
-];
-
-Song.deleteMany()
-.then(() => {
-  return Song.create(songs);
-})
 
 Room.deleteMany()
   .then(() => {

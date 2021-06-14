@@ -15,7 +15,7 @@ router.get("/", (req, res, next) => {
     });
 });
 
-// Get all messages in one specific room
+// Get all info for one specific room
 router.get("/:roomId", (req, res, next) => {
   Room.findById(req.params.roomId)
     .then(room => {
@@ -26,7 +26,7 @@ router.get("/:roomId", (req, res, next) => {
     });
 });
 
-//Send a new message
+// Send a new message
 router.post("/sendMessage/:roomId", (req, res, next) => {
   console.log(req.body)
   Message.create({
@@ -48,5 +48,18 @@ router.post("/sendMessage/:roomId", (req, res, next) => {
     });
 });
 
+// Delete song from especific room
+router.put("/delete/:id", (req, res, next) => {
+  const songs = req.body.songs;
+
+  Room.findOneAndUpdate(req.params.id, { songs: songs })
+    .then(room => {
+      Room.findById(room._id).then(user => {
+        res.status(200).json(user);
+      });
+      console.log("Room songs has been updated successfully");
+    })
+    .catch(error => console.log("Ha sucedido algo malo" + error));
+});
 
 module.exports = router;

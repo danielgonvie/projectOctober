@@ -29,9 +29,9 @@ class RoomService {
       .catch(error => console.error(error));
   };
 
-  deleteUser = id => {
+  deleteSong = (roomId, songs )=> {
     return this.instance
-      .delete(`/users/delete/${id}`)
+      .put(`/rooms/delete/${roomId}`, {songs})
       .then(res => Promise.resolve(res.data))
       .catch(error => console.error(error));
   };
