@@ -1,4 +1,7 @@
 #!/usr/bin/env node
+const express = require("express");
+const router = express.Router();
+const Room = require("../models/Room");
 
 const http = require('http');
 
@@ -50,6 +53,9 @@ const socketio = require('socket.io');
 const io = socketio(server);
 
 io.on('connection', socket => {
+  let channel;
+  let actualUsers;
+  let userId;
 
   socket.on('conectado', () => {
     console.log("Usuario conectado");
@@ -61,13 +67,50 @@ io.on('connection', socket => {
   })
 
   socket.on('mensaje', (owner, message, roomId) => {
-    console.log("entro en mensaje1")
     io.emit("mensajes", {owner, message, roomId});
 
   })
 
-  socket.on('disconect', () => {
-    io.emit("mensajes", {servidor: "Servidor", mensaje: "Ha abandonadop la sala"});
+  socket.on('joinedRoom', (roomId, currentUsers, userIdentifier) => {
+    userId = userIdentifier;
+    channel = roomId;
+    actualUsers = currentUsers;
+    Room.findOneAndUpdate({_id: channel}, { currentUsers: currentUsers}, {new: true})
+    .then(room => {
+      io.emit("updateUsers", roomId, room.currentUsers);
+    })
+    .catch(error => console.log("Ha sucedido algo malo" + error));
+  })
+
+  socket.on('leaveRoom', (roomId, currentUsers, userId) => {
+    let leaveArr = currentUsers;
+    let index = leaveArr.indexOf(userId)
+    if(index > -1){
+      leaveArr.splice(index, 1)
+    }
+    Room.findOneAndUpdate({_id: roomId}, { currentUsers: leaveArr}, {new: true})
+    .then(room => {
+      io.emit("updateUsers", roomId, leaveArr);
+    })
+    .catch(error => console.log("Ha sucedido algo malo" + error));
+  })
+
+  socket.on('disconnect', () => {
+    if(actualUsers){
+    Room.findById(channel).then(room => {
+      actualUsers = room.currentUsers;
+        let index = actualUsers.indexOf(userId)
+        if(index > -1){
+          actualUsers.splice(index, 1)
+        }
+        Room.findOneAndUpdate({_id: channel}, { currentUsers: actualUsers}, {new: true})
+        .then(room => {
+          io.emit("updateUsers", channel, actualUsers);
+        })
+        .catch(error => console.log("Ha sucedido algo malo" + error));
+    }
+    )
+  }
   })
 
   socket.on('newSong', (song) => {

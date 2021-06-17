@@ -71,7 +71,7 @@ let rooms = [
       }
     ],
     currentTime: 15,
-    currentUsers: 0
+    currentUsers: []
   },
   {
     name: "Lolsito",
@@ -107,7 +107,7 @@ let rooms = [
       }
     ],
     currentTime: 30,
-    currentUsers: 0
+    currentUsers: []
   },
 ]
 

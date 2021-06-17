@@ -6,8 +6,8 @@ const roomSchema = new Schema(
     name: String,
     content: [{message: String, owner: String}],
     songs: [{videoId: String, requestedBy: String}],
-    currentTime: String,
-    currentUsers: Number,
+    currentTime: Number,
+    currentUsers: [Schema.Types.ObjectId],
   },
   {
     timestamps: {
