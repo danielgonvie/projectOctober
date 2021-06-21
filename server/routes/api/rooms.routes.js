@@ -3,6 +3,7 @@ const router = express.Router();
 
 const Message = require("../../models/Message");
 const Room = require("../../models/Room");
+const Song = require("../../models/Song");
 
 // Get all rooms
 router.get("/", (req, res, next) => {
@@ -49,10 +50,10 @@ router.post("/sendMessage/:roomId", (req, res, next) => {
 });
 
 // Delete song from especific room
-router.put("/delete/:id", (req, res, next) => {
+router.put("/delete/:roomId", (req, res, next) => {
   const songs = req.body.songs;
 
-  Room.findOneAndUpdate(req.params.id, { songs: songs })
+  Room.findOneAndUpdate(req.params.roomId, { songs: songs })
     .then(room => {
       Room.findById(room._id).then(user => {
         res.status(200).json(user);
@@ -60,6 +61,30 @@ router.put("/delete/:id", (req, res, next) => {
       console.log("Room songs has been updated successfully");
     })
     .catch(error => console.log("Ha sucedido algo malo" + error));
+});
+
+// Add song from especific room
+router.put("/add/:roomId", (req, res, next) => {
+  const song = req.body.song;
+  console.log(song, "que es esto pa")
+
+    Song.create({
+      videoId: song.videoId,
+      requestedBy: song.requestedBy
+    })
+      .then(song => {
+        Room.findByIdAndUpdate(req.params.roomId, { $push: { songs: song}} )
+         .then(room => {
+          Room.findById(room._id).then(user => {
+            res.status(200).json(user);
+          });
+          console.log("Room songs has been updated successfully");
+         })
+  
+      })
+      .catch(error => {
+        res.status(500).json({ message: "Something went wrong" });
+      });
 });
 
 module.exports = router;

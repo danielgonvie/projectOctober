@@ -35,6 +35,13 @@ class RoomService {
       .then(res => Promise.resolve(res.data))
       .catch(error => console.error(error));
   };
+
+  addSong = (song, songs, roomId )=> {
+    return this.instance
+      .put(`/rooms/add/${roomId}`, {song, songs})
+      .then(res => Promise.resolve(res.data))
+      .catch(error => console.error(error));
+  };
 }
 
 export default RoomService;
