@@ -8,6 +8,7 @@ const roomSchema = new Schema(
     songs: [{videoId: String, requestedBy: String}],
     currentTime: Number,
     currentUsers: [Schema.Types.ObjectId],
+    leader: Schema.Types.ObjectId
   },
   {
     timestamps: {

@@ -30,6 +30,7 @@ export default class RoomComponent extends Component {
       videoCode: '',
       recentUser: true,
       player: '',
+      videoInfo: {}
     };
   }
 
@@ -81,8 +82,41 @@ export default class RoomComponent extends Component {
         if (!room.currentUsers.includes(this.state.user._id)){
           arr.push(this.state.user._id);
         }
-        await this.setState({ ...this.state, selectedRoom: {...room, currentUsers: arr}})
-        socket.emit('joinedRoom', room._id, this.state.selectedRoom.currentUsers, this.state.user._id)
+        console.log("!!!!!!!!!!!!!!", room);
+        if(room.leader !== undefined && room.leader !== '' && room.leader !== null){
+          await this.setState({ ...this.state, selectedRoom: {...room, currentUsers: arr}})
+        } else {
+          await this.setState({ ...this.state, selectedRoom: {...room, currentUsers: arr, leader: this.state.user._id}})
+        }
+        console.log("!!!!!!!!!!!!!!", this.state.selectedRoom);
+        socket.emit('joinedRoom', room._id, this.state.selectedRoom.currentUsers, this.state.user._id, this.state.selectedRoom.leader)
+        
+        socket.on('setTime', async (roomId, time) => {
+          console.log("he recibido el time", time);
+          socket.off('setTime');
+          if(roomId === this.state.selectedRoom._id){
+            await this.setState({
+              ...this.state,
+              selectedRoom: {
+                ...this.state.selectedRoom,
+                currentTime: time,
+              },
+              opts: {...this.state.opts,
+                playerVars: {
+                  ...this.state.opts.playerVars,
+                  autoplay: 1,
+                  controls: 0,
+                  start: time //
+                }
+              },
+              recentUser: false,
+              videoCode: this.state.selectedRoom.songs[0].videoId,
+            })
+          }
+          this.setTimer();
+          
+        })
+
         socket.on('updateUsers', (roomId, updatedUsers) => {
           if(roomId === this.state.selectedRoom._id){
             this.setState({
@@ -95,38 +129,53 @@ export default class RoomComponent extends Component {
           }
           }
         );
+
+        if(this.state.selectedRoom.leader === this.state.user._id){
+          socket.on('getTime', roomId => {
+          console.log("peudo hacer getTime")
+          if(roomId === this.state.selectedRoom._id){
+            console.log(this.state.selectedRoom, "que lleva la sala en este momento")
+          socket.emit('sendTime', this.state.selectedRoom._id, this.state.selectedRoom.currentTime, this.state.user._id);
+          }
+        })
+        }
+        console.log(this.state.selectedRoom.currentUsers.length, "ISTO QUE E PA")
         if(this.state.selectedRoom?.currentUsers.length === 1){
           this.setState({...this.state, recentUser: false});
-          socket.on('getTime', socket.emit('sendTime', this.state.selectedRoom.currentTime));
+          socket.off('setTime');
+          if(this.state.selectedRoom.songs.length === 0){
+            await this.setState({
+              ...this.state,
+              opts: {...this.state.opts,
+                playerVars: {
+                  ...this.state.opts.playerVars,
+                  autoplay: 1,
+                  controls: 0,
+                  start: 0
+                }
+              },
+              videoCode: 'W7tWE_leySI',
+            })
+          } else {
+            console.log(">>>>>>>>>>>>>>>>", this.state.selectedRoom);
+            await this.setState({
+              ...this.state,
+              opts: {...this.state.opts,
+                playerVars: {
+                  ...this.state.opts.playerVars,
+                  autoplay: 1,
+                  controls: 0,
+                  start: this.state.selectedRoom.currentTime //
+                }
+              },
+              videoCode: this.state.selectedRoom.songs[0].videoId,
+            })
+          }
 
-          await this.setState({
-            ...this.state,
-            opts: {...this.state.opts,
-              playerVars: {
-                ...this.state.opts.playerVars,
-                autoplay: 1,
-                controls: 0,
-                start: this.state.selectedRoom.currentTime
-              }
-            },
-            videoCode: this.state.selectedRoom.songs[0].videoId,
-          })
           this.setTimer();
         } else {
-          await this.setState({
-            ...this.state,
-            opts: {...this.state.opts,
-              playerVars: {
-                ...this.state.opts.playerVars,
-                autoplay: 1,
-                controls: 0,
-                start: this.state.selectedRoom.currentTime
-              }
-            },
-            recentUser: false,
-            videoCode: this.state.selectedRoom.songs[0].videoId,
-          })
-          this.setTimer();
+          console.log(">>>>>>>>>>>>>>>>", this.state.selectedRoom);
+          
         }
       }
     )
@@ -145,6 +194,7 @@ export default class RoomComponent extends Component {
           songs: arr,
         }
       })
+      console.log(this.state.selectedRoom.songs, "pero bueno, sin el primero se supone")
       this.roomService.deleteSong(this.state.selectedRoom._id, this.state.selectedRoom.songs)
       .then(room => console.log(room, "room updated"))
       .catch(error => console.log(error));
@@ -223,13 +273,25 @@ export default class RoomComponent extends Component {
     .then(async (room) => {
       console.log(room);
 /*       socket.emit('newSong', room); */
-      await this.setState({
-        ...this.state,
-        selectedRoom: {
-          ...this.state.selectedRoom,
-          songs: [...this.state.selectedRoom.songs, ...room.songs],
-        }
-      })
+      if(this.state.selectedRoom.songs.length !== 0){
+        this.setState({
+          ...this.state,
+          selectedRoom: {
+            ...this.state.selectedRoom,
+            songs: [...this.state.selectedRoom.songs, ...room.songs],
+          }
+        })
+      } else {
+        this.setState({
+          ...this.state,
+          selectedRoom: {
+            ...this.state.selectedRoom,
+            songs: [...this.state.selectedRoom.songs, ...room.songs],
+          },
+          videoCode: room.songs[0].videoId
+        })
+      }
+
     })
   }
 
@@ -263,7 +325,12 @@ export default class RoomComponent extends Component {
   }
 
   getPlayer(ev){
-    this.state.player = ev.target;
+    this.setState({ ...this.state, player: ev.target });
+  }
+
+  async getData(){
+    let auxObj = await this.state.player.getVideoData()
+    this.setState({ ...this.state, videoInfo: auxObj });
   }
 
   render() {
@@ -275,6 +342,7 @@ export default class RoomComponent extends Component {
     } else {
       videoPlayer = <YouTube
       onReady={(ev) => this.getPlayer(ev)}
+      onPlay={ev => this.getData()}
       videoId={this.state.videoCode}
       containerClassName="embed embed-youtube"
       onEnd={(e) => this.nextSong()}
@@ -312,6 +380,7 @@ export default class RoomComponent extends Component {
 
       </div>
       {selectedRoom && this.displayPlayer()}
+      <h1>{this.state.videoInfo.title}</h1>
       {videoPlayer}
     </>
     );

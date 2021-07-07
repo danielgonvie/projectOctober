@@ -59,11 +59,11 @@ io.on('connection', socket => {
 
   socket.on('conectado', () => {
     console.log("Usuario conectado");
-    io.emit('getTime')
   })
 
-  socket.on('sendTime', (time) => {
-    io.emit('setTime', time)
+  socket.on('sendTime', (roomId, time) => {
+    console.log("he recibido el time en server", time);
+    io.emit('setTime', roomId, time)
   })
 
   socket.on('mensaje', (owner, message, roomId) => {
@@ -71,13 +71,15 @@ io.on('connection', socket => {
 
   })
 
-  socket.on('joinedRoom', (roomId, currentUsers, userIdentifier) => {
+  socket.on('joinedRoom', (roomId, currentUsers, userIdentifier, leader) => {
+    console.log(leader, "que tenemos en el back")
     userId = userIdentifier;
     channel = roomId;
     actualUsers = currentUsers;
-    Room.findOneAndUpdate({_id: channel}, { currentUsers: currentUsers}, {new: true})
+    Room.findOneAndUpdate({_id: channel}, { currentUsers: currentUsers, leader: leader}, {new: true})
     .then(room => {
       io.emit("updateUsers", roomId, room.currentUsers);
+      io.emit('getTime', roomId)
     })
     .catch(error => console.log("Ha sucedido algo malo" + error));
   })

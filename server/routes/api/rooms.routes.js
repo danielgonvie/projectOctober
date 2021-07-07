@@ -66,7 +66,6 @@ router.put("/delete/:roomId", (req, res, next) => {
 // Add song from especific room
 router.put("/add/:roomId", (req, res, next) => {
   const song = req.body.song;
-  console.log(song, "que es esto pa")
 
     Song.create({
       videoId: song.videoId,

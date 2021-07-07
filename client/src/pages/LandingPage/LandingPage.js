@@ -10,8 +10,8 @@ export default class Login extends Component {
   }
 
   state = {
-    username: "",
-    password: "",
+    username: "ductor",
+    password: "ductor",
     pass: true
   };
 
